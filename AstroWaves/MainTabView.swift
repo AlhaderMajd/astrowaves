@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var ownedLands: [(landID: String, cropType: String)] = []
+    @State private var ownedLands: [(landID: String, cropType: String, numberOfCropsString: String)] = []
 
     var body: some View {
         TabView {

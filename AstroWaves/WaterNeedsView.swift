@@ -3,17 +3,85 @@ import SwiftUI
 struct WaterNeedsView: View {
     @State var landID: String
     @State var cropType: String
+    @State var numberOfCropsString: String
     @State var waterNeeds = 0.0
+    @State var isLoading = false
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Water Needs for \(cropType)")
-                .font(.largeTitle)
-                .bold()
-                .multilineTextAlignment(.center)
+            // Header with Icon
+            VStack(spacing: 10) {
+                Image(systemName: "drop.fill")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.blue)
+                Text("Water Needs for \(cropType)")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.top, 20)
 
-            Text("Land ID: \(landID)")
-            Text("Estimated Water Needs: \(waterNeeds, specifier: "%.2f") liters/day")
+            // Water Needs Information
+            VStack(spacing: 15) {
+                Text("Land ID: \(landID)")
+                    .font(.headline)
+                    .padding(.bottom, 5)
+                
+                if isLoading {
+                    ProgressView()
+                        .padding()
+                } else {
+                    let cropsWaterNeeds: [String: Double] = [
+                        "Wheat": 4.0,
+                        "Corn": 6.5,
+                        "Rice": 7.5,
+                        "Cotton": 5.0,
+                        "Barley": 3.5,
+                        "Potatoes": 4.5,
+                        "Tomatoes": 5.0,
+                        "Carrots": 3.5,
+                        "Cucumber": 4.0,
+                        "Onions": 4.0,
+                        "Strawberries": 3.0,
+                        "Olives": 2.5,
+                        "Apples": 4.0,
+                        "Oranges": 4.5,
+                        "Grapes": 3.5,
+                        "Watermelon": 5.5,
+                        "Melon": 4.5,
+                        "Dates": 3.0,
+                        "Soybeans": 4.5,
+                        "Beans": 4.0,
+                        "Eggplant": 4.0
+                    ]
+                    Text("Estimated Water Needs: \(((waterNeeds + cropsWaterNeeds[cropType]!) *  Double(numberOfCropsString)!), specifier: "%.2f") mm/day")
+                        .font(.title2)
+                        .bold()
+                        .foregroundColor(waterNeeds > 0 ? .green : .red)
+                        .multilineTextAlignment(.center)
+
+                }
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .shadow(radius: 5)
+
+            // Refresh Button
+            Button(action: {
+                calculateWaterNeeds()
+            }) {
+                Text("Refresh Data")
+                    .bold()
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.green)
+                    .cornerRadius(10)
+            }
+            .padding(.horizontal, 20)
         }
         .padding()
         .onAppear {
@@ -22,10 +90,12 @@ struct WaterNeedsView: View {
     }
 
     func calculateWaterNeeds() {
+        isLoading = true
         let apiRequest = APIRequest()
         print("Sending API request...") // Before sending the request
 
         apiRequest.sendRequest { result in
+            isLoading = false
             switch result {
             case .success(let data):
                 print("Received data from API: \(data.count) bytes") // Check byte size
@@ -66,6 +136,3 @@ struct WaterNeedsView: View {
     }
 }
 
-#Preview {
-    WaterNeedsView(landID: "12345", cropType: "Wheat")
-}

@@ -11,11 +11,22 @@ class APIRequest {
         request.setValue("application/json", forHTTPHeaderField: "accept")
         request.setValue("\(apiKey)", forHTTPHeaderField: "Authorization") // Ensure 'Bearer' is included
 
+        // Get today's and yesterday's date formatted as strings
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd" // Format for API
+
+        let today = Date()
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
+
+        let formattedToday = formatter.string(from: today)
+        let formattedYesterday = formatter.string(from: yesterday)
+
+        // Prepare the request body with today's and yesterday's date
         let body: [String: Any] = [
-            "date_range": ["2020-01-01", "2020-12-31"],
+            "date_range": [formattedYesterday, formattedToday], // Use yesterday's date and today's date
             "file_format": "JSON",
             "geometry": [-121.36322, 38.87626],
-            "interval": "monthly",
+            "interval": "daily", // Interval set to daily
             "model": "Ensemble",
             "reference_et": "gridMET",
             "units": "mm",

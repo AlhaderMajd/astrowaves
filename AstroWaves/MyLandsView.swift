@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MyLandsView: View {
-    @Binding var ownedLands: [(landID: String, cropType: String)]
+    @Binding var ownedLands: [(landID: String, cropType: String, numberOfCropsString: String)]
 
     var body: some View {
         VStack(spacing: 20) {
@@ -13,11 +13,13 @@ struct MyLandsView: View {
 
             List(ownedLands, id: \.landID) { land in
                 // إضافة NavigationLink لربط كل أرض بصفحة WaterNeedsView
-                NavigationLink(destination: WaterNeedsView(landID: land.landID, cropType: land.cropType)) {
+                NavigationLink(destination: WaterNeedsView(landID: land.landID, cropType: land.cropType, numberOfCropsString: land.numberOfCropsString)) {
                     VStack(alignment: .leading) {
                         Text("Land ID: \(land.landID)")
                             .font(.subheadline)
                         Text("Crop Type: \(land.cropType)")
+                            .font(.subheadline)
+                        Text("Number Of Crops: \(land.numberOfCropsString)")
                             .font(.subheadline)
                     }
                 }
@@ -29,6 +31,3 @@ struct MyLandsView: View {
     }
 }
 
-#Preview {
-    MyLandsView(ownedLands: .constant([("12345", "Wheat"), ("67890", "Corn")]))
-}

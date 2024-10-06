@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct NextPageView: View {
-    var ownedLands: [(landID: String, cropType: String)] // البيانات الممررة من الصفحة السابقة
+    var ownedLands: [(landID: String, cropType: String, numberOfCropsString: String)] // البيانات الممررة من الصفحة السابقة
 
     var body: some View {
         NavigationView {
@@ -19,6 +19,8 @@ struct NextPageView: View {
                             .font(.subheadline)
                         Text("Crop Type: \(land.cropType)")
                             .font(.subheadline)
+                        Text("Number Of Crops: \(land.numberOfCropsString)")
+                            .font(.subheadline)
                     }
                 }
 
@@ -28,8 +30,4 @@ struct NextPageView: View {
             .padding()
         }
     }
-}
-
-#Preview {
-    NextPageView(ownedLands: [("12345", "Wheat"), ("67890", "Corn")])
 }
